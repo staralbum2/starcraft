@@ -19,6 +19,10 @@ public class Account {
 	public String getNum() {
 		return this.num;
 	}
+	@Override
+	public String toString() {
 	
+		return this.num +"  "+ this.money + "원";
+	}
 	
 }
