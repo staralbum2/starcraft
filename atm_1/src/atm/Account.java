@@ -3,10 +3,21 @@ package atm;
 import java.util.ArrayList;
 
 public class Account {
-	ArrayList<User> user;
+	private int num;
+	private int money;
 	
-	Account (){
-		
+	Account (int num){
+		this.num = num;	
+	}
+	public void setMoney(int money) {
+		this.money = money;
+	}
+	public int getMoney() {
+		return this.money;
+	}
+	
+	public int getNum() {
+		return this.num;
 	}
 	
 }
