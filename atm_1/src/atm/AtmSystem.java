@@ -212,21 +212,37 @@ public class AtmSystem {
 		if (exceptionSelSize(sel, 0, users.get(log).getAccoutSize() - 1))
 			return;
 		int cash = (int) input(NUMBER, "입금하실 금액");
-		if(cash <= 100) {
+		if (cash <= 100) {
 			System.out.println("100원 이하 입금 불가");
 			return;
 		}
-		users.get(log).getAccout().get(sel).setMoney(+cash);
+		users.get(log).getAccout().get(sel).setMoney(cash);
+		System.out.println("입금 완료");
 	}
 
 	private void withdrawl() {
-		// 이체할 계좌 목록보여주고 입력
-		// 이체받을 계좌입력
-		// 금액
-
+		printMyAccount();
+		int sel = (int) input(NUMBER, "입금하실 계좌 선택") - 1;
+		User temp = users.get(log);
+		if (exceptionSelSize(sel, 0, temp.getAccoutSize() - 1))
+			return;
+		int cash = (int) input(NUMBER, "출금하실 금액");
+		if (cash <= 100) {
+			System.out.println("100원 이하 출금 불가");
+			return;
+		}
+		if(cash > temp.getAccout().get(sel).getMoney()) {
+			System.out.println("잔액이 부족합니다.");
+			return;
+		}
+		temp.getAccout().get(sel).setMoney(-cash);
+		System.out.println("출금 완료");
 	}
 
 	private void transfer() {
+		// 이체할 계좌 목록보여주고 입력
+		// 이체받을 계좌입력
+		// 금액
 
 	}
 
