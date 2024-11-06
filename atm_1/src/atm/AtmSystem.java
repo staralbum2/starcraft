@@ -1,5 +1,6 @@
 package atm;
 
+import java.awt.peer.DialogPeer;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -107,6 +108,7 @@ public class AtmSystem {
 		int sel = (int) input(NUMBER, "메뉴 선택");
 		if (exceptionSelSize(sel, ACCOUNT, LOAD))
 			return;
+
 		switch (sel) {
 		case ACCOUNT:
 			account();
@@ -155,6 +157,8 @@ public class AtmSystem {
 		int sel = (int) input(NUMBER, "메뉴 선택");
 		if (exceptionSelSize(sel, ADD, REMOVE))
 			return;
+		if (exceptionAccountNum(sel))
+			return;
 		if (sel == ADD) {
 			if (users.get(log).getAccoutSize() >= 3) {
 				System.err.println("개설 가능 한도초과 입니다.");
@@ -184,9 +188,7 @@ public class AtmSystem {
 	}
 
 	private void removeAccount() {
-		// 비밀번호 입력받고 계좌 세개보여준뒤
-		// 번호입력받아 삭제
-		//
+
 		printMyAccount();
 		int sel = (int) input(NUMBER, "철회하실 계좌 선택") - 1;
 		if (exceptionSelSize(sel, 0, users.get(log).getAccoutSize() - 1))
@@ -249,7 +251,7 @@ public class AtmSystem {
 			User temp = users.get(i);
 			ArrayList<Account> tempAccount = temp.getAccout();
 			for (int j = 0; j < tempAccount.size(); j++) {
-				if (tempAccount.get(j).getNum()==transAccount) {
+				if (tempAccount.get(j).getNum() == transAccount) {
 					findUserIdx = i;
 					findIdx = j;
 					break;
@@ -294,7 +296,19 @@ public class AtmSystem {
 	}
 
 	private boolean exceptionSelSize(int sel, int start, int max) {
-		return sel < start || sel > max;
+		if (sel < start || sel > max) {
+			System.err.println("선택범위 초과");
+			return true;
+		}
+		return false;
+	}
+
+	private boolean exceptionAccountNum(int sel) {
+		if ((sel >= DEPOSIT || sel <= CHECK) && users.get(log).getAccout().size() == 0) {
+			System.err.println("개설된 계좌가 없습니다.");
+			return true;
+		}
+		return false;
 	}
 
 	private Object input(int type, String msg) {
