@@ -122,7 +122,7 @@ public class AtmSystem {
 			break;
 		
 		default:
-			throw new IllegalArgumentException("Unexpected value: " + sel);
+			System.err.println("메뉴선택오류");
 		}
 		
 	}
