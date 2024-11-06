@@ -173,7 +173,7 @@ public class AtmSystem {
 
 	private void addAccount() {
 		while (true) {
-			int ranAccout = 1110000121 + ran.nextInt((9999)+1)*1000;
+			int ranAccout = 1110000121 + ran.nextInt((9999) + 1) * 1000;
 			Account temp = new Account(ranAccout);
 			if (!users.contains(temp)) {
 				users.get(log).addAcount(temp);
@@ -248,13 +248,15 @@ public class AtmSystem {
 		for (int i = 0; i < users.size(); i++) {
 			User temp = users.get(i);
 			ArrayList<Account> tempAccount = temp.getAccout();
-			findIdx = tempAccount.indexOf(transAccount);	
-			if (findIdx != -1) {
-				findUserIdx = i;
-				break;
+			for (int j = 0; j < tempAccount.size(); j++) {
+				if (tempAccount.get(j).getNum()==transAccount) {
+					findUserIdx = i;
+					findIdx = j;
+					break;
+				}
 			}
 		}
-		if(findUserIdx == -1) {
+		if (findUserIdx == -1) {
 			System.out.println("이체받을 계좌를 다시 확인하세요.");
 			return;
 		}
