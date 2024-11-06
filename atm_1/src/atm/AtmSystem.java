@@ -1,9 +1,8 @@
 package atm;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
-
-import javax.lang.model.element.ModuleElement.UsesDirective;
 
 public class AtmSystem {
 	private final int STRING = 1;
@@ -17,16 +16,18 @@ public class AtmSystem {
 	private final int WITHDRAWAL = 3;
 	private final int TRANSFER = 4;
 	private final int CHECK = 5;
-	private final int SAVE = 6;
-	private final int LOAD = 7;
-	private final int LOG_OUT = 8;
+	private final int LOG_OUT = 7;
+	private final int SAVE = 7;
+	private final int LOAD = 8;
+	
 	private final int EXIT = 0;
-	
+
 	private Scanner scan = new Scanner(System.in);
-	
-	private ArrayList<ArrayList<User>> users;
+	private Random ran = new Random();
+
+	private ArrayList<User> users;
 	private int log = -1;
-	
+
 	public void run() {
 		// 회원탈퇴,가입
 		// 계좌 신청 철회(1인 3개맥스)
@@ -35,9 +36,10 @@ public class AtmSystem {
 		// 파일 저장 로드
 		while (true) {
 			printMenu();
-			int sel = (int)input(NUMBER,"메뉴 선택");
+			int sel = (int) input(NUMBER, "메뉴 선택");
 			switch (sel) {
 			case JOIN:
+				joinUser();
 				break;
 
 			case LOG_IN:
@@ -48,12 +50,40 @@ public class AtmSystem {
 			}
 		}
 	}
-	
+
+	private void printMenu() {
+		System.out.println("1.회원가입");
+		System.out.println("2.로그인");
+	}
+
+	private void joinUser() {
+		String id = (String)input(STRING, "ID");
+		if(users.contains(id)){
+			System.out.println("중복되는 아이디입니다.");
+			return;
+		}
+		String pw = (String)input(STRING, "PW");
+		String name = (String)input(STRING, "이름");
+		int code = createRandomCode();
+		User user = new User(code,name,id,pw);
+		users.add(user);
+		System.out.println("가입완료." + users);
+	}
+
+	private int createRandomCode() {
+		while (true) {
+			int code = ran.nextInt(9000) + 1000;
+			if (!users.contains(code))
+				return code;
+
+		}
+	}
+
 	private void logIn() {
-		String id = (String)input(STRING,"ID");
-		String pw = (String)input(STRING,"PW");
+		String id = (String) input(STRING, "ID");
+		String pw = (String) input(STRING, "PW");
 		int idIdx = users.indexOf(id);
-		if(idIdx != users.indexOf(pw) || users.indexOf(pw)!= -1 || idIdx != -1) {
+		if (idIdx != users.indexOf(pw) || users.indexOf(pw) != -1 || idIdx != -1) {
 			System.err.println("계정 정보를 다시 확인하세요.");
 			return;
 		}
@@ -61,22 +91,64 @@ public class AtmSystem {
 		System.out.println("로그인 성공");
 		afterLogin();
 	}
+
 	private void afterLogin() {
 		printSecondMenu();
-		int sel = (int)input(NUMBER,"메뉴 선택");
+		int sel = (int) input(NUMBER, "메뉴 선택");
+		switch (sel) {
+		case ACCOUNT: 
+			accout();
+			break;
+		case DEPOSIT: 
+			deposit();
+			break;
+		case WITHDRAWAL: 
+			withdrawl();
+			break;
+		case TRANSFER: 
+			transfer();
+			break;
+		case CHECK: 
+			check();
+			break;
+		case LOG_OUT: 
+			logOut();
+			break;
+		case SAVE: 
+			save();
+			break;
+		case LOAD: 
+			load();
+			break;
+		
+		default:
+			throw new IllegalArgumentException("Unexpected value: " + sel);
+		}
+		
 	}
-	
-	private Object input(int type,String msg) {
+	private void printSecondMenu() {
+		System.out.println("1) 계좌관리");
+		System.out.println("2) 입금");
+		System.out.println("3) 출금");
+		System.out.println("4) 이체");
+		System.out.println("5) 조회");
+		System.out.println("6) 로그아웃");
+		System.out.println("7) 저장");
+		System.out.println("8) 불러오기");
+		System.out.println("0) 종료");
+	}
+
+	private Object input(int type, String msg) {
 		System.out.println(msg + " ");
 		String input = null;
-		if(type == STRING) {
-			while(true) {
+		if (type == STRING) {
+			while (true) {
 				input = scan.nextLine();
-				if(!input.equals("")) 
+				if (!input.equals(""))
 					return input;
 			}
 		}
-		if(type == NUMBER) {
+		if (type == NUMBER) {
 			input = scan.nextLine();
 			try {
 				int num = Integer.parseInt(input);
