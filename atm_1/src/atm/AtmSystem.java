@@ -1,7 +1,10 @@
 package atm;
 
-import java.awt.peer.DialogPeer;
+
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -26,18 +29,21 @@ public class AtmSystem {
 
 	private Scanner scan = new Scanner(System.in);
 	private Random ran = new Random();
-	
+
 	private String name;
 	private ArrayList<User> users = new ArrayList<>();
 	private int log = -1;
-	
-	private String fileName = name + ".txt";
+
+	private FileWriter fileWriter;
+	private FileReader fileReader;
+	private BufferedReader bufferedReader;
+
+	private String fileName =   "ATM.txt";
 	private String home = System.getProperty("user.home");
 	private String sep = System.getProperty("file.separator");
 	private String doc = "documents";
 	private String path = String.format("%s%s%s%s%s", home, sep, doc, sep, fileName);
-	
-	
+	private File file;
 
 	AtmSystem(String name) {
 		this.name = name;
@@ -117,7 +123,8 @@ public class AtmSystem {
 		int sel = (int) input(NUMBER, "메뉴 선택");
 		if (exceptionSelSize(sel, ACCOUNT, LOAD))
 			return;
-
+		if (exceptionAccountNum(sel))
+			return;
 		switch (sel) {
 		case ACCOUNT:
 			account();
@@ -148,6 +155,7 @@ public class AtmSystem {
 	}
 
 	private void printSecondMenu() {
+		System.out.println(users.size());
 		System.out.println(log);
 		System.out.println("1) 계좌관리");
 		System.out.println("2) 입금");
@@ -166,8 +174,7 @@ public class AtmSystem {
 		int sel = (int) input(NUMBER, "메뉴 선택");
 		if (exceptionSelSize(sel, ADD, REMOVE))
 			return;
-		if (exceptionAccountNum(sel))
-			return;
+		
 		if (sel == ADD) {
 			if (users.get(log).getAccoutSize() >= 3) {
 				System.err.println("개설 가능 한도초과 입니다.");
@@ -298,6 +305,37 @@ public class AtmSystem {
 
 	private void save() {
 		
+		// 유저명 
+		// ㄴ 이름 코드 아이디 비번 계좌
+		// 					 ㄴ 생성된 계좌 
+		try {
+			file = new File(path);
+			fileWriter = new FileWriter(file);
+			String info = "";
+			for(int i=0;i<users.size();i++) {
+				User tempUser = users.get(i);
+				info = String.format("%d,%s,%s,%s", tempUser.getCode(),tempUser.getName(),tempUser.getId(),tempUser.getPw());
+				for(int j=0;j<tempUser.getAccout().size();j++) {
+					Account tempAccount = tempUser.getAccout().get(j);	
+					info += "+" + tempAccount.getNum() + "+" + tempAccount.getMoney();
+				}
+				if(i<users.size()-1) {
+					info+="\n";
+				}
+			}
+			fileWriter.write(info);
+			System.out.println("파일저장성공");
+		} catch (Exception e) {
+			System.err.println("파일저장실패");
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				fileWriter.close();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
 	}
 
 	private void load() {
@@ -313,7 +351,7 @@ public class AtmSystem {
 	}
 
 	private boolean exceptionAccountNum(int sel) {
-		if ((sel >= DEPOSIT || sel <= CHECK) && users.get(log).getAccout().size() == 0) {
+		if ((sel >= DEPOSIT && sel <= CHECK) && users.get(log).getAccout().size() == 0) {
 			System.err.println("개설된 계좌가 없습니다.");
 			return true;
 		}
