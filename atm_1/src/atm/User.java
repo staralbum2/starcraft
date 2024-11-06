@@ -29,7 +29,7 @@ public class User {
 		return this.id;
 	}
 	
-	public String getPd() {
+	public String getPw() {
 		return this.passWord;
 	}
 	@Override
