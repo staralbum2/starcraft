@@ -19,13 +19,13 @@ public class AtmSystem {
 	private final int LOG_OUT = 7;
 	private final int SAVE = 7;
 	private final int LOAD = 8;
-	
+
 	private final int EXIT = 0;
 
 	private Scanner scan = new Scanner(System.in);
 	private Random ran = new Random();
 
-	private ArrayList<User> users;
+	private ArrayList<User> users = new ArrayList<>();
 	private int log = -1;
 
 	public void run() {
@@ -37,17 +37,11 @@ public class AtmSystem {
 		while (true) {
 			printMenu();
 			int sel = (int) input(NUMBER, "메뉴 선택");
-			switch (sel) {
-			case JOIN:
+			if (sel == JOIN)
 				joinUser();
-				break;
-
-			case LOG_IN:
-				logIn();
-				break;
-			default:
-				System.err.println("잘못된 메뉴 선택입니다.");
-			}
+			else if (sel == LOG_IN)
+				while (log != -1)
+					logIn();
 		}
 	}
 
@@ -57,17 +51,18 @@ public class AtmSystem {
 	}
 
 	private void joinUser() {
-		String id = (String)input(STRING, "ID");
-		if(users.contains(id)){
+		String id = (String) input(STRING, "ID");
+
+		String pw = (String) input(STRING, "PW");
+		String name = (String) input(STRING, "이름");
+		int code = createRandomCode();
+		User user = new User(code, name, id, pw);
+		if (users.contains(user)) {
 			System.out.println("중복되는 아이디입니다.");
 			return;
 		}
-		String pw = (String)input(STRING, "PW");
-		String name = (String)input(STRING, "이름");
-		int code = createRandomCode();
-		User user = new User(code,name,id,pw);
 		users.add(user);
-		System.out.println("가입완료." + users);
+		System.out.println("가입완료.");
 	}
 
 	private int createRandomCode() {
@@ -96,36 +91,37 @@ public class AtmSystem {
 		printSecondMenu();
 		int sel = (int) input(NUMBER, "메뉴 선택");
 		switch (sel) {
-		case ACCOUNT: 
+		case ACCOUNT:
 			accout();
 			break;
-		case DEPOSIT: 
+		case DEPOSIT:
 			deposit();
 			break;
-		case WITHDRAWAL: 
+		case WITHDRAWAL:
 			withdrawl();
 			break;
-		case TRANSFER: 
+		case TRANSFER:
 			transfer();
 			break;
-		case CHECK: 
+		case CHECK:
 			check();
 			break;
-		case LOG_OUT: 
+		case LOG_OUT:
 			logOut();
 			break;
-		case SAVE: 
+		case SAVE:
 			save();
 			break;
-		case LOAD: 
+		case LOAD:
 			load();
 			break;
-		
+
 		default:
 			System.err.println("메뉴선택오류");
 		}
-		
+
 	}
+
 	private void printSecondMenu() {
 		System.out.println("1) 계좌관리");
 		System.out.println("2) 입금");
@@ -138,6 +134,39 @@ public class AtmSystem {
 		System.out.println("0) 종료");
 	}
 
+	private void accout() {
+
+	}
+
+	private void deposit() {
+
+	}
+
+	private void withdrawl() {
+
+	}
+
+	private void transfer() {
+
+	}
+
+	private void check() {
+
+	}
+	private void logOut() {
+		log = -1;
+		System.out.println("로그아웃 완료.");
+	}
+
+	private void save() {
+
+	}
+
+	private void load() {
+
+	}
+	
+	
 	private Object input(int type, String msg) {
 		System.out.println(msg + " ");
 		String input = null;
