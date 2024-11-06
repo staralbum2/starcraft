@@ -1,6 +1,7 @@
 package atm;
 
 import java.awt.peer.DialogPeer;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -25,10 +26,18 @@ public class AtmSystem {
 
 	private Scanner scan = new Scanner(System.in);
 	private Random ran = new Random();
-
+	
 	private String name;
 	private ArrayList<User> users = new ArrayList<>();
 	private int log = -1;
+	
+	private String fileName = name + ".txt";
+	private String home = System.getProperty("user.home");
+	private String sep = System.getProperty("file.separator");
+	private String doc = "documents";
+	private String path = String.format("%s%s%s%s%s", home, sep, doc, sep, fileName);
+	
+	
 
 	AtmSystem(String name) {
 		this.name = name;
@@ -288,7 +297,7 @@ public class AtmSystem {
 	}
 
 	private void save() {
-
+		
 	}
 
 	private void load() {
