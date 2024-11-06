@@ -71,13 +71,11 @@ public class AtmSystem {
 		int code = createRandomCode();
 		User user = new User(code, name, id, pw);
 		for (int i = 0; i < users.size(); i++) {
-			if (user.getId().equals(id)) {
+			if (users.get(i).getId().equals(id)) {
 				System.out.println("중복되는 아이디가 있숩니다.");
-				afterLogin();
 				return;
 			}
 		}
-
 		users.add(user);
 		System.out.println("가입완료.");
 	}
@@ -87,7 +85,6 @@ public class AtmSystem {
 			int code = ran.nextInt(9000) + 1000;
 			if (!users.contains(code))
 				return code;
-
 		}
 	}
 
@@ -99,7 +96,6 @@ public class AtmSystem {
 			if (user.getId().equals(id) && user.getPw().equals(pw)) {
 				log = i;
 				System.out.println("로그인 성공");
-
 				return;
 			}
 		}
@@ -161,7 +157,7 @@ public class AtmSystem {
 			return;
 		if (sel == ADD) {
 			if (users.get(log).getAccoutSize() >= 3) {
-				System.err.println("개설 가능한 계좌 한도입니다.");
+				System.err.println("개설 가능 한도초과 입니다.");
 				return;
 			}
 			addAccount(); // 3개까지가능
@@ -188,9 +184,19 @@ public class AtmSystem {
 	}
 
 	private void removeAccount() {
-
+		// 비밀번호 입력받고 계좌 세개보여준뒤
+		// 번호입력받아 삭제
+		//
+		printMyAccount();
+		int sel = (int)input(NUMBER, "철회하실 계좌 선택")-1;
+		if(exceptionSelSize(sel, 0, users.get(log).getAccoutSize()-1))
+			return;
+		users.get(log).removeAcount(sel);
+		System.out.println("삭제 완료");
 	}
-
+	private void printMyAccount() {
+		System.out.println(users.get(log));	
+	}
 	private void printAccountMenu() {
 		System.out.println(log);
 		System.out.println("1) 계좌 생성");
@@ -198,11 +204,17 @@ public class AtmSystem {
 	}
 
 	private void deposit() {
-
+		// 계좌 리스트 보여주ㅗㄱ 
+		// 선택 계좌 > 입력계좌
+		// 돈입력
+		// 머니반영
 	}
 
 	private void withdrawl() {
-
+		//이체할 계좌 목록보여주고 입력
+		//이체받을 계좌입력 
+		// 금액
+		
 	}
 
 	private void transfer() {
@@ -210,7 +222,7 @@ public class AtmSystem {
 	}
 
 	private void check() {
-
+		//리스트 세개
 	}
 
 	private void logOut() {
