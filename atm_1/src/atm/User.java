@@ -7,7 +7,7 @@ public class User {
 	private String name;
 	private String id;
 	private String passWord;
-	private ArrayList<Account> accounts;
+	private ArrayList<Account> accounts = new ArrayList<>();
 	
 	public User(int code, String name,String id,String passWord) {
 		this.name=name;
@@ -20,6 +20,17 @@ public class User {
 	}
 	public void removeAcount(Account account) {
 		accounts.remove(account);
+	}
+	public int getAccoutSize() {
+		return accounts.size();
+	}
+	
+	public String getId() {
+		return this.id;
+	}
+	
+	public String getPd() {
+		return this.passWord;
 	}
 	@Override
 	public String toString() {
