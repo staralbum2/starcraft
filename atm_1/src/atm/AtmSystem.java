@@ -115,7 +115,7 @@ public class AtmSystem {
 			deposit();
 			break;
 		case WITHDRAWAL:
-			withdrawl();
+			withdrawal();
 			break;
 		case TRANSFER:
 			transfer();
@@ -173,7 +173,7 @@ public class AtmSystem {
 
 	private void addAccount() {
 		while (true) {
-			String ranAccout = String.format("111 - %d - 121%d", ran.nextInt(8998) + 1000, ran.nextInt(88) + 10);
+			int ranAccout = 1110000121 + ran.nextInt((9999)+1)*1000;
 			Account temp = new Account(ranAccout);
 			if (!users.contains(temp)) {
 				users.get(log).addAcount(temp);
@@ -220,7 +220,7 @@ public class AtmSystem {
 		System.out.println("입금 완료");
 	}
 
-	private void withdrawl() {
+	private void withdrawal() {
 		printMyAccount();
 		int sel = (int) input(NUMBER, "입금하실 계좌 선택") - 1;
 		User temp = users.get(log);
@@ -231,7 +231,7 @@ public class AtmSystem {
 			System.out.println("100원 이하 출금 불가");
 			return;
 		}
-		if(cash > temp.getAccout().get(sel).getMoney()) {
+		if (cash > temp.getAccout().get(sel).getMoney()) {
 			System.out.println("잔액이 부족합니다.");
 			return;
 		}
@@ -240,14 +240,42 @@ public class AtmSystem {
 	}
 
 	private void transfer() {
-		// 이체할 계좌 목록보여주고 입력
-		// 이체받을 계좌입력
-		// 금액
-
+		printMyAccount();
+		int sel = (int) input(NUMBER, "이체하실 계좌 선택") - 1;
+		int transAccount = (int) input(NUMBER, "이체받을 계좌번호");
+		int findUserIdx = -1;
+		int findIdx = -1;
+		for (int i = 0; i < users.size(); i++) {
+			User temp = users.get(i);
+			ArrayList<Account> tempAccount = temp.getAccout();
+			findIdx = tempAccount.indexOf(transAccount);	
+			if (findIdx != -1) {
+				findUserIdx = i;
+				break;
+			}
+		}
+		if(findUserIdx == -1) {
+			System.out.println("이체받을 계좌를 다시 확인하세요.");
+			return;
+		}
+		User give = users.get(log);
+		User receive = users.get(findUserIdx);
+		int cash = (int) input(NUMBER, "이체하실 금액");
+		if (cash <= 100) {
+			System.out.println("100원 이하 이체 불가");
+			return;
+		}
+		if (cash > give.getAccout().get(sel).getMoney()) {
+			System.out.println("잔액이 부족합니다.");
+			return;
+		}
+		give.getAccout().get(sel).setMoney(-cash);
+		receive.getAccout().get(findIdx).setMoney(cash);
+		System.out.println("이체 완료");
 	}
 
 	private void check() {
-		// 리스트 세개
+		printMyAccount();
 	}
 
 	private void logOut() {
