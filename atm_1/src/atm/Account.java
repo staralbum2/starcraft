@@ -3,11 +3,11 @@ package atm;
 import java.util.ArrayList;
 
 public class Account {
-	private int num;
+	private String num;
 	private int money;
 	private int cnt;
 	
-	Account (int num){
+	Account (String num){
 		this.num = num;
 		this.cnt++;
 	}
@@ -18,7 +18,7 @@ public class Account {
 		return this.money;
 	}
 	
-	public int getNum() {
+	public String getNum() {
 		return this.num;
 	}
 	public int getCnt() {
