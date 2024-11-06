@@ -16,7 +16,7 @@ public class AtmSystem {
 	private final int WITHDRAWAL = 3;
 	private final int TRANSFER = 4;
 	private final int CHECK = 5;
-	private final int LOG_OUT = 7;
+	private final int LOG_OUT = 6;
 	private final int SAVE = 7;
 	private final int LOAD = 8;
 
@@ -25,8 +25,13 @@ public class AtmSystem {
 	private Scanner scan = new Scanner(System.in);
 	private Random ran = new Random();
 
+	private String name;
 	private ArrayList<User> users = new ArrayList<>();
 	private int log = -1;
+
+	AtmSystem(String name) {
+		this.name = name;
+	}
 
 	public void run() {
 		// 회원탈퇴,가입
@@ -37,30 +42,42 @@ public class AtmSystem {
 		while (true) {
 			printMenu();
 			int sel = (int) input(NUMBER, "메뉴 선택");
+			if (exceptionSelSize(sel, EXIT, LOG_IN))
+				continue;
 			if (sel == JOIN)
 				joinUser();
-			else if (sel == LOG_IN)
+			else if (sel == LOG_IN) {
+				logIn();
 				while (log != -1)
-					logIn();
+					afterLogin();
+			} else if (sel == EXIT) {
+				System.out.println(name + " atm 서비스 종료");
+				break;
+			}
 		}
 	}
 
 	private void printMenu() {
+		System.out.println("=== " + name + " ATM 서비스 ===");
 		System.out.println("1.회원가입");
 		System.out.println("2.로그인");
+		System.out.println("0.종료");
 	}
 
 	private void joinUser() {
 		String id = (String) input(STRING, "ID");
-
 		String pw = (String) input(STRING, "PW");
 		String name = (String) input(STRING, "이름");
 		int code = createRandomCode();
 		User user = new User(code, name, id, pw);
-		if (users.contains(user)) {
-			System.out.println("중복되는 아이디입니다.");
-			return;
+		for (int i = 0; i < users.size(); i++) {
+			if (user.getId().equals(id)) {
+				System.out.println("중복되는 아이디가 있숩니다.");
+				afterLogin();
+				return;
+			}
 		}
+
 		users.add(user);
 		System.out.println("가입완료.");
 	}
@@ -77,22 +94,26 @@ public class AtmSystem {
 	private void logIn() {
 		String id = (String) input(STRING, "ID");
 		String pw = (String) input(STRING, "PW");
-		int idIdx = users.indexOf(id);
-		if (idIdx != users.indexOf(pw) || users.indexOf(pw) != -1 || idIdx != -1) {
-			System.err.println("계정 정보를 다시 확인하세요.");
-			return;
+		for (int i = 0; i < users.size(); i++) {
+			User user = users.get(i);
+			if (user.getId().equals(id) && user.getPw().equals(pw)) {
+				log = i;
+				System.out.println("로그인 성공");
+
+				return;
+			}
 		}
-		log = idIdx;
-		System.out.println("로그인 성공");
-		afterLogin();
+		System.err.println("계정 정보를 다시 확인하세요.");
 	}
 
 	private void afterLogin() {
 		printSecondMenu();
 		int sel = (int) input(NUMBER, "메뉴 선택");
+		if (exceptionSelSize(sel, ACCOUNT, LOAD))
+			return;
 		switch (sel) {
 		case ACCOUNT:
-			accout();
+			account();
 			break;
 		case DEPOSIT:
 			deposit();
@@ -115,14 +136,12 @@ public class AtmSystem {
 		case LOAD:
 			load();
 			break;
-
-		default:
-			System.err.println("메뉴선택오류");
 		}
 
 	}
 
 	private void printSecondMenu() {
+		System.out.println(log);
 		System.out.println("1) 계좌관리");
 		System.out.println("2) 입금");
 		System.out.println("3) 출금");
@@ -134,8 +153,48 @@ public class AtmSystem {
 		System.out.println("0) 종료");
 	}
 
-	private void accout() {
+	private void account() {
+		printAccountMenu();
+		System.out.println(users.get(log).getAccoutSize());
+		int sel = (int) input(NUMBER, "메뉴 선택");
+		if (exceptionSelSize(sel, ADD, REMOVE))
+			return;
+		if (sel == ADD) {
+			if (users.get(log).getAccoutSize() >= 3) {
+				System.err.println("개설 가능한 계좌 한도입니다.");
+				return;
+			}
+			addAccount(); // 3개까지가능
+			System.out.println("개설 완료");
+		} else if (sel == REMOVE) {
+			if (users.get(log).getAccoutSize() <= 0) {
+				System.err.println("개설하신 계좌가 없습니다.");
+				return;
+			}
+			removeAccount(); // 0개땐 불가능
+		}
+	}
 
+	private void addAccount() {
+		while (true) {
+			String ranAccout = String.format("111 - %d - 121%d", ran.nextInt(8998) + 1000, ran.nextInt(88) + 10);
+			Account temp = new Account(ranAccout);
+			if (!users.contains(temp)) {
+				users.get(log).addAcount(temp);
+				System.out.println(ranAccout);
+				break;
+			}
+		}
+	}
+
+	private void removeAccount() {
+
+	}
+
+	private void printAccountMenu() {
+		System.out.println(log);
+		System.out.println("1) 계좌 생성");
+		System.out.println("2) 계좌 철회");
 	}
 
 	private void deposit() {
@@ -153,6 +212,7 @@ public class AtmSystem {
 	private void check() {
 
 	}
+
 	private void logOut() {
 		log = -1;
 		System.out.println("로그아웃 완료.");
@@ -165,8 +225,11 @@ public class AtmSystem {
 	private void load() {
 
 	}
-	
-	
+
+	private boolean exceptionSelSize(int sel, int start, int max) {
+		return sel < start || sel > max;
+	}
+
 	private Object input(int type, String msg) {
 		System.out.println(msg + " ");
 		String input = null;
@@ -186,6 +249,6 @@ public class AtmSystem {
 				System.err.println("숫자를 입력하세요.");
 			}
 		}
-		return input;
+		return -1;
 	}
 }
