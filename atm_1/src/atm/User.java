@@ -21,4 +21,15 @@ public class User {
 	public void removeAcount(Account account) {
 		accounts.remove(account);
 	}
+	@Override
+	public String toString() {
+		String info = "";
+		
+		info += String.format("%s  %s님의 계좌목록", this.id,this.name);
+		for(int i=0;i<accounts.size();i++) {
+			if(accounts != null)
+				info+= "\n" + accounts.get(i);
+		}
+		return info;
+	}
 }
