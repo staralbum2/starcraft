@@ -177,7 +177,7 @@ public class AtmSystem {
 			Account temp = new Account(ranAccout);
 			if (!users.contains(temp)) {
 				users.get(log).addAcount(temp);
-				System.out.println(ranAccout);
+				System.out.println(temp);
 				break;
 			}
 		}
@@ -188,15 +188,18 @@ public class AtmSystem {
 		// 번호입력받아 삭제
 		//
 		printMyAccount();
-		int sel = (int)input(NUMBER, "철회하실 계좌 선택")-1;
-		if(exceptionSelSize(sel, 0, users.get(log).getAccoutSize()-1))
+		int sel = (int) input(NUMBER, "철회하실 계좌 선택") - 1;
+		if (exceptionSelSize(sel, 0, users.get(log).getAccoutSize() - 1))
 			return;
+
+		System.out.println("철회 완료");
 		users.get(log).removeAcount(sel);
-		System.out.println("삭제 완료");
 	}
+
 	private void printMyAccount() {
-		System.out.println(users.get(log));	
+		System.out.println(users.get(log));
 	}
+
 	private void printAccountMenu() {
 		System.out.println(log);
 		System.out.println("1) 계좌 생성");
@@ -204,17 +207,23 @@ public class AtmSystem {
 	}
 
 	private void deposit() {
-		// 계좌 리스트 보여주ㅗㄱ 
-		// 선택 계좌 > 입력계좌
-		// 돈입력
-		// 머니반영
+		printMyAccount();
+		int sel = (int) input(NUMBER, "입금하실 계좌 선택") - 1;
+		if (exceptionSelSize(sel, 0, users.get(log).getAccoutSize() - 1))
+			return;
+		int cash = (int) input(NUMBER, "입금하실 금액");
+		if(cash <= 100) {
+			System.out.println("100원 이하 입금 불가");
+			return;
+		}
+		users.get(log).getAccout().get(sel).setMoney(+cash);
 	}
 
 	private void withdrawl() {
-		//이체할 계좌 목록보여주고 입력
-		//이체받을 계좌입력 
+		// 이체할 계좌 목록보여주고 입력
+		// 이체받을 계좌입력
 		// 금액
-		
+
 	}
 
 	private void transfer() {
@@ -222,7 +231,7 @@ public class AtmSystem {
 	}
 
 	private void check() {
-		//리스트 세개
+		// 리스트 세개
 	}
 
 	private void logOut() {
