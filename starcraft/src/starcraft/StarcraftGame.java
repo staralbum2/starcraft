@@ -1,6 +1,7 @@
 package starcraft;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 public class StarcraftGame {
@@ -8,8 +9,9 @@ public class StarcraftGame {
     private static Scanner scanner = new Scanner(System.in);
     private static ArrayList<Unit> units = new ArrayList<>();
     private static ArrayList<Unit> enemyUnits = new ArrayList<>();
-
+    
     private static StarcraftGame starcraftGame = new StarcraftGame();
+    private static Random random = new Random();
 
     StarcraftGame() {}
 
@@ -35,10 +37,8 @@ public class StarcraftGame {
 
     private static void createInitialUnits() {
         units.add(new SCV());
-
-        enemyUnits.add(new SCV());
+        enemyUnits.add(new SCV()); 
     }
-
 
     private static void createUnitMenu() {
         System.out.println("어떤 유닛을 생성하시겠습니까?");
@@ -62,6 +62,28 @@ public class StarcraftGame {
             System.out.println("유닛 생성이 취소되었습니다.");
         } else {
             System.out.println("잘못된 선택입니다.");
+        }
+
+        createEnemyUnit();
+    }
+
+    private static void createEnemyUnit() {
+       
+        int randomChoice = random.nextInt(3) + 1; 
+        
+        switch (randomChoice) {
+            case 1:
+                enemyUnits.add(new Marine());
+                System.out.println("적이 마린 유닛을 생성했습니다.");
+                break;
+            case 2:
+                enemyUnits.add(new Tank());
+                System.out.println("적이 탱크 유닛을 생성했습니다.");
+                break;
+            case 3:
+                enemyUnits.add(new DropShip());
+                System.out.println("적이 드랍쉽 유닛을 생성했습니다.");
+                break;
         }
     }
 
@@ -101,7 +123,7 @@ public class StarcraftGame {
         }
 
         Unit attacker = units.get(attackerIndex);
-        if (attacker instanceof DropShip && ((DropShip) attacker).protectedUnit != null) {
+        if (attacker instanceof DropShip && ((DropShip) attacker).getProtectedUnit() != null) {
             System.out.println("현재 드랍쉽에 탑승중인 유닛이 있습니다. 해당 유닛은 공격할 수 없습니다.");
             return;
         }
@@ -133,20 +155,4 @@ public class StarcraftGame {
         }
 
         if (!enemyUnits.isEmpty()) {
-            Unit enemyAttacker = enemyUnits.get(0);
-            Unit enemyTarget = units.get(0);
-            System.out.println(enemyAttacker.getName() + "가 " + enemyTarget.getName() + "을 공격합니다.");
-            enemyAttacker.attack(enemyTarget);
-
-            if (enemyTarget.getHp() <= 0) {
-                System.out.println(enemyTarget.getName() + " 유닛이 사망했습니다.");
-                units.remove(enemyTarget);
-            }
-
-            if (units.isEmpty()) {
-                System.out.println("게임 종료! 적이 승리했습니다.");
-                System.exit(0);
-            }
-        }
-    }
-}
+            Unit enemyAttacker = enemy
