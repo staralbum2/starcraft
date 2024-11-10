@@ -37,7 +37,9 @@ public class StarcraftGame {
 
     private static void createInitialUnits() {
         units.add(new SCV());
-        enemyUnits.add(new SCV()); 
+        enemyUnits.add(new SCV());
+
+        
     }
 
     private static void createUnitMenu() {
@@ -64,12 +66,13 @@ public class StarcraftGame {
             System.out.println("잘못된 선택입니다.");
         }
 
+      
         createEnemyUnit();
     }
 
     private static void createEnemyUnit() {
        
-        int randomChoice = random.nextInt(3) + 1; 
+        int randomChoice = random.nextInt(3) + 1;  
         
         switch (randomChoice) {
             case 1:
@@ -155,4 +158,20 @@ public class StarcraftGame {
         }
 
         if (!enemyUnits.isEmpty()) {
-            Unit enemyAttacker = enemy
+            Unit enemyAttacker = enemyUnits.get(0);
+            Unit enemyTarget = units.get(0);
+            System.out.println(enemyAttacker.getName() + "가 " + enemyTarget.getName() + "을 공격합니다.");
+            enemyAttacker.attack(enemyTarget);
+
+            if (enemyTarget.getHp() <= 0) {
+                System.out.println(enemyTarget.getName() + " 유닛이 사망했습니다.");
+                units.remove(enemyTarget);
+            }
+
+            if (units.isEmpty()) {
+                System.out.println("게임 종료! 적이 승리했습니다.");
+                System.exit(0);
+            }
+        }
+    }
+}
